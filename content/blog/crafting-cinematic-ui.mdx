@@ -1,0 +1,29 @@
+---
+title: "Crafting Cinematic UI Without Killing Performance"
+excerpt: "How to keep smooth animations, rich visuals, and strong Lighthouse scores in the same portfolio."
+date: "2026-02-14"
+tags:
+  - nextjs
+  - performance
+  - animation
+---
+
+Modern portfolios need strong visual identity, but motion-heavy interfaces can become heavy quickly.
+
+## Strategy That Works
+
+- Keep the 3D scene focused on one clear hero object.
+- Use lazy loading for non-critical heavy sections.
+- Prefer GPU-friendly properties (`transform`, `opacity`) for transitions.
+- Reduce blur usage in long-scrolling areas.
+
+## Practical Notes
+
+I use Next.js App Router to split server/client boundaries clearly. This helps ship less JavaScript by default and only hydrate interactive zones.
+
+Then I layer in Framer Motion selectively: hero reveal, card entrances, and timeline transitions. This gives presence without animation fatigue.
+
+## Final Rule
+
+Motion should support comprehension, not decoration.
+
