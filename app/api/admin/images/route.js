@@ -11,14 +11,6 @@ cloudinary.config({
 const allowedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 const maxImageSizeBytes = 8 * 1024 * 1024;
 
-function sanitizeFileName(fileName) {
-  const extension = path.extname(fileName).toLowerCase();
-  const baseName = path.basename(fileName, extension).toLowerCase();
-  const safeBaseName = baseName.replace(/[^a-z0-9-_]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
-  const fallbackBaseName = safeBaseName || "image";
-  return { extension, baseName: fallbackBaseName };
-}
-
 function unauthorizedResponse() {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
