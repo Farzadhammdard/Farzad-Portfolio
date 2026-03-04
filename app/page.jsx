@@ -4,6 +4,7 @@ import { ExperienceSection } from "@/components/sections/experience-section";
 import { GallerySection } from "@/components/sections/gallery-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
+import { Footer } from "@/components/sections/footer-section";
 import { readSiteContent } from "@/api/content-store";
 
 export const dynamic = "force-dynamic";
@@ -31,13 +32,10 @@ export default async function HomePage() {
         <ContactSection />
       </main>
 
-      <footer className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-300">
-          © {new Date().getFullYear()} Farzad. ساخته شده با JavaScript، Next.js و Tailwind CSS.
-        </div>
-      </footer>
+      <Footer />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>
   );
 }
+
