@@ -1,7 +1,12 @@
-﻿import { promises as fs } from "node:fs";
-import path from "node:path";
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/api/admin/auth";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const allowedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 const maxImageSizeBytes = 8 * 1024 * 1024;
@@ -24,22 +29,20 @@ export async function GET() {
   }
 
   try {
-    const galleryPath = path.join(process.cwd(), "public", "gallery");
-    await fs.mkdir(galleryPath, { recursive: true });
-    const files = await fs.readdir(galleryPath, { withFileTypes: true });
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "gallery",
+      resource_type: "image",
+    });
 
-    const images = files
-      .filter((file) => file.isFile())
-      .filter((file) => allowedExtensions.has(path.extname(file.name).toLowerCase()))
-      .map((file) => ({
-        name: file.name,
-        src: `/gallery/${encodeURI(file.name)}`
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const images = result.resources.map((resource) => ({
+      name: resource.public_id.split("/").pop(),
+      src: resource.secure_url,
+    }));
 
     return NextResponse.json({ images });
   } catch (error) {
-    console.error("[admin/images] failed", error);
+    console.error("[admin/images] failed to fetch from Cloudinary", error);
     return NextResponse.json({ error: "Failed to load image list" }, { status: 500 });
   }
 }
@@ -61,29 +64,31 @@ export async function POST(request) {
       return NextResponse.json({ error: "Image is too large. Max size is 8MB." }, { status: 400 });
     }
 
-    const { extension, baseName } = sanitizeFileName(file.name);
+    const extension = "." + file.name.split(".").pop().toLowerCase();
     if (!allowedExtensions.has(extension)) {
       return NextResponse.json({ error: "Unsupported image format." }, { status: 400 });
     }
 
-    const timestamp = Date.now();
-    const fileName = `${timestamp}-${baseName}${extension}`;
-    const galleryPath = path.join(process.cwd(), "public", "gallery");
-    const destinationPath = path.join(galleryPath, fileName);
-
     const bytes = await file.arrayBuffer();
-    await fs.mkdir(galleryPath, { recursive: true });
-    await fs.writeFile(destinationPath, Buffer.from(bytes));
+    const buffer = Buffer.from(bytes);
+    const base64 = buffer.toString("base64");
+    const dataUri = `data:${file.type};base64,${base64}`;
+
+    const uploadResult = await cloudinary.uploader.upload(dataUri, {
+      folder: "gallery",
+      resource_type: "image",
+    });
 
     return NextResponse.json({
       ok: true,
       image: {
-        name: fileName,
-        src: `/gallery/${encodeURI(fileName)}`
-      }
+        name: uploadResult.public_id.split("/").pop(),
+        src: uploadResult.secure_url,
+      },
     });
   } catch (error) {
     console.error("[admin/images] upload failed", error);
     return NextResponse.json({ error: "Failed to upload image." }, { status: 500 });
   }
 }
+
