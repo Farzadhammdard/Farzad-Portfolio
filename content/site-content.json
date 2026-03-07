@@ -1,0 +1,76 @@
+{
+  "projects": [
+    {
+      "id": "project-1772681815572",
+      "title": "dfsdfds",
+      "description": "asd",
+      "image": "",
+      "stack": [
+        "dsfsdf"
+      ]
+    }
+  ],
+  "galleryImages": [
+    {
+      "id": "gallery-1",
+      "title": "Project Work 01",
+      "src": "/gallery/20200430_142149.jpg"
+    },
+    {
+      "id": "gallery-2",
+      "title": "Project Work 02",
+      "src": "/gallery/IMG-20240327-WA0001.jpg"
+    },
+    {
+      "id": "gallery-3",
+      "title": "Project Work 03",
+      "src": "/gallery/IMG-20240823-WA0026.jpg"
+    },
+    {
+      "id": "gallery-4",
+      "title": "Project Work 04",
+      "src": "/gallery/IMG-20250220-WA0002.jpg"
+    },
+    {
+      "id": "gallery-5",
+      "title": "Project Work 05",
+      "src": "/gallery/IMG-20250221-WA0006.jpg"
+    },
+    {
+      "id": "gallery-6",
+      "title": "Project Work 06",
+      "src": "/gallery/IMG-20250421-WA0014.jpg"
+    },
+    {
+      "id": "gallery-7",
+      "title": "Project Work 07",
+      "src": "/gallery/IMG_20240214_154835_806.jpg"
+    },
+    {
+      "id": "gallery-8",
+      "title": "Project Work 08",
+      "src": "/gallery/IMG_20240215_115728_519.jpg"
+    },
+    {
+      "id": "gallery-9",
+      "title": "Project Work 09",
+      "src": "/gallery/IMG_20240410_173402_886.jpg"
+    },
+    {
+      "id": "gallery-10",
+      "title": "Project Work 10",
+      "src": "/gallery/IMG_20240624_181728_357.jpg"
+    },
+    {
+      "id": "gallery-11",
+      "title": "Project Work 11",
+      "src": "/gallery/IMG_20240627_183831_261.jpg"
+    },
+    {
+      "id": "gallery-12",
+      "title": "Project Work 12",
+      "src": "/gallery/IMG_20240724_135707_390.jpg"
+    }
+  ],
+  "updatedAt": "2026-03-05T04:34:05.918Z"
+}
