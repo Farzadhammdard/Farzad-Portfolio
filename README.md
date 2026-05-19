@@ -2,9 +2,8 @@
 
 نسخه ساده‌شده پورتفولیو با این ویژگی‌ها:
 
-- JavaScript خالص (بدون TypeScript)
-- طراحی سبک و خلوت با Tailwind CSS
-- بدون 3D و بدون افکت‌های سنگین
+- JavaScript
+- طراحی سبک  Tailwind CSS
 - پشتیبانی فارسی و انگلیسی (RTL/LTR)
 - پنل ادمین در پوشه جدا: `admin/`
 - API logic در پوشه `api/` و route ها در `app/api/`
