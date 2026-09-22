@@ -1,10 +1,9 @@
 ﻿import "server-only";
 
 import { createHash } from "node:crypto";
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import { readJsonDocument, writeJsonDocument } from "@/api/json-store";
 
-const adminUsersFilePath = path.join(process.cwd(), "content", "admin-users.json");
+const adminUsersFileName = "admin-users.json";
 const defaultUsername = process.env.PORTFOLIO_ADMIN_USERNAME?.trim().toLowerCase() || "admin";
 const defaultPassword = process.env.PORTFOLIO_ADMIN_PASSWORD?.trim() || "123";
 
@@ -42,22 +41,14 @@ function getDefaultAdminUsers() {
 }
 
 export async function readAdminUsers() {
-  try {
-    const content = await fs.readFile(adminUsersFilePath, "utf8");
-    const parsed = JSON.parse(content);
-    if (!Array.isArray(parsed)) {
-      return getDefaultAdminUsers();
-    }
-
-    const normalized = parsed.map((item) => normalizeUser(item)).filter(Boolean);
-
-    return normalized.length > 0 ? normalized : getDefaultAdminUsers();
-  } catch (error) {
-    if (error && error.code === "ENOENT") {
-      return getDefaultAdminUsers();
-    }
-    throw error;
+  const parsed = await readJsonDocument(adminUsersFileName);
+  if (!Array.isArray(parsed)) {
+    return getDefaultAdminUsers();
   }
+
+  const normalized = parsed.map((item) => normalizeUser(item)).filter(Boolean);
+
+  return normalized.length > 0 ? normalized : getDefaultAdminUsers();
 }
 
 export async function writeAdminUsers(users) {
@@ -65,8 +56,7 @@ export async function writeAdminUsers(users) {
 
   const uniqueUsers = Array.from(new Map(normalizedUsers.map((item) => [item.username, item])).values());
 
-  await fs.mkdir(path.dirname(adminUsersFilePath), { recursive: true });
-  await fs.writeFile(adminUsersFilePath, `${JSON.stringify(uniqueUsers, null, 2)}\n`, "utf8");
+  await writeJsonDocument(adminUsersFileName, uniqueUsers);
 }
 
 export async function verifyAdminCredentials(username, password) {

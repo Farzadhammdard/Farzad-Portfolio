@@ -1,10 +1,9 @@
 ﻿import "server-only";
 
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { galleryImages as defaultGalleryImages, projects as defaultProjects } from "@/lib/site-data";
+import { readJsonDocument, writeJsonDocument } from "@/api/json-store";
 
-const contentFilePath = path.join(process.cwd(), "content", "site-content.json");
+const contentFileName = "site-content.json";
 
 function asString(value, fallback = "") {
   return typeof value === "string" ? value.trim() : fallback;
@@ -82,15 +81,11 @@ function normalizeSiteContent(value) {
 }
 
 export async function readSiteContent() {
-  try {
-    const content = await fs.readFile(contentFilePath, "utf8");
-    return normalizeSiteContent(JSON.parse(content));
-  } catch (error) {
-    if (error && error.code === "ENOENT") {
-      return getDefaultContent();
-    }
-    throw error;
+  const content = await readJsonDocument(contentFileName);
+  if (!content) {
+    return getDefaultContent();
   }
+  return normalizeSiteContent(content);
 }
 
 export async function writeSiteContent(value) {
@@ -99,8 +94,7 @@ export async function writeSiteContent(value) {
     updatedAt: new Date().toISOString()
   });
 
-  await fs.mkdir(path.dirname(contentFilePath), { recursive: true });
-  await fs.writeFile(contentFilePath, `${JSON.stringify(normalizedContent, null, 2)}\n`, "utf8");
+  await writeJsonDocument(contentFileName, normalizedContent);
 
   return normalizedContent;
 }

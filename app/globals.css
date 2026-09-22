@@ -2,12 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/*
+  Design tokens — see /areas/portfolio-redesign.md for the brand spec.
+  Values are R G B triplets so Tailwind's <alpha-value> opacity modifiers work
+  (e.g. bg-surface/60). Dark is the default/first-class theme.
+*/
+:root,
+:root[data-theme="dark"] {
   color-scheme: dark;
+  --color-bg: 7 7 10;              /* #07070A */
+  --color-surface: 13 13 18;       /* #0D0D12 */
+  --color-surface-hover: 20 18 28; /* subtle elevated surface */
+  --color-fg: 245 245 247;         /* #F5F5F7 */
+  --color-muted: 161 161 170;      /* #A1A1AA */
+  --color-border: 245 245 247;     /* used with low alpha, e.g. border-border/10 */
+  --color-primary: 105 71 191;     /* #6947BF */
+  --color-primary-dark: 52 20 124; /* #34147C */
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: 250 250 251;         /* #FAFAFB */
+  --color-surface: 255 255 255;    /* #FFFFFF */
+  --color-surface-hover: 244 244 247;
+  --color-fg: 13 13 18;            /* #0D0D12 */
+  --color-muted: 82 82 91;         /* #52525B */
+  --color-border: 13 13 18;        /* used with low alpha */
+  --color-primary: 105 71 191;     /* #6947BF */
+  --color-primary-dark: 52 20 124; /* #34147C */
 }
 
 * {
-  border-color: rgba(148, 163, 184, 0.2);
+  border-color: rgb(var(--color-border) / 0.12);
 }
 
 html,
@@ -17,21 +43,29 @@ body {
 }
 
 body {
-  font-family: var(--font-vazirmatn), sans-serif;
-  background: #050814;
+  font-family: var(--font-inter), var(--font-vazirmatn), sans-serif;
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-fg));
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Persian text keeps Vazirmatn even inside an :lang(en) tree, English keeps Inter */
+:lang(fa) {
+  font-family: var(--font-vazirmatn), sans-serif;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-vazirmatn), sans-serif;
+  font-family: inherit;
+  letter-spacing: -0.02em;
 }
 
 ::selection {
-  background: rgba(14, 165, 233, 0.35);
-  color: #f8fbff;
+  background: rgb(var(--color-primary) / 0.35);
+  color: rgb(var(--color-fg));
 }
 
 ::-webkit-scrollbar {
@@ -39,10 +73,16 @@ h4 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #060b1a;
+  background: rgb(var(--color-bg));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.8), rgba(14, 165, 233, 0.8));
+  background: linear-gradient(180deg, rgb(var(--color-primary) / 0.8), rgb(var(--color-primary-dark) / 0.8));
   border-radius: 999px;
+}
+
+/* Focus states kept visible everywhere for accessibility */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-primary));
+  outline-offset: 2px;
 }

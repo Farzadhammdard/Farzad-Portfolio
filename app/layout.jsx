@@ -1,6 +1,7 @@
-﻿import { Vazirmatn } from "next/font/google";
+﻿import { Inter, Vazirmatn } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { LanguageProvider } from "@/components/ui/language-provider";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Navbar } from "@/components/ui/navbar";
 import "./globals.css";
 
@@ -8,6 +9,24 @@ const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
   variable: "--font-vazirmatn"
 });
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter"
+});
+
+// Runs before hydration so the saved theme applies before first paint (no flash).
+const themeInitScript = `
+(function () {
+  try {
+    var saved = window.localStorage.getItem("portfolio-theme");
+    var theme = saved === "light" || saved === "dark" ? saved : "dark";
+    document.documentElement.dataset.theme = theme;
+  } catch (e) {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+`;
 
 export const metadata = {
   metadataBase: new URL("https://farzad-portfolio.vercel.app"),
@@ -36,24 +55,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fa" dir="rtl" className="bg-ink">
-      <body className={`${vazirmatn.variable} font-body bg-ink text-slate-100 antialiased`}>
-        <LanguageProvider>
-          <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_40%),linear-gradient(180deg,#050913_0%,#080f1f_100%)]">
-            <Navbar />
-            {children}
-          </div>
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: "#0c162a",
-                color: "#dbeafe",
-                border: "1px solid rgba(56,189,248,0.35)"
-              }
-            }}
-          />
-        </LanguageProvider>
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body
+        className={`${vazirmatn.variable} ${inter.variable} font-body bg-background text-foreground antialiased`}
+      >
+        <ThemeProvider>
+          <LanguageProvider>
+            <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgb(105_71_191_/_0.14),transparent_45%)]">
+              <Navbar />
+              {children}
+            </div>
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: "rgb(var(--color-surface))",
+                  color: "rgb(var(--color-fg))",
+                  border: "1px solid rgb(var(--color-primary) / 0.35)"
+                }
+              }}
+            />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
